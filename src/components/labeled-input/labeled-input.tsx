@@ -6,15 +6,16 @@ interface LabeledInputProps {
 	type: string;
 	placeholder?: string;
 	accept?: string;
+	onChange?: () => void;
 }
 
-export const LabeledInput = ({ labelFor, name, placeholder, type }: LabeledInputProps) => {
+export const LabeledInput = ({ labelFor, name, placeholder, type, onChange }: LabeledInputProps) => {
 	return (
 		<>
 			<label className='label__label' htmlFor={labelFor}>
 				{name}
 			</label>
-			<input className='label__input' type={type} placeholder={placeholder} name={labelFor} />
+			<input className='label__input' type={type} placeholder={placeholder} name={labelFor} onChange={onChange} />
 		</>
 	);
 };
