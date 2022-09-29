@@ -11,5 +11,12 @@
 		border-radius: 25px;
 		font-size: 1rem;
 		opacity: 0.75;
+		cursor: pointer;
+
+		&:focus {
+			outline: none;
+			border-color: yellow;
+			box-shadow: 0 0 10px yellow;
+		}
 	}
 }
