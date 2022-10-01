@@ -1,94 +1,97 @@
-import { FormEvent, useState } from 'react';
+import React from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import './App.scss';
 import { LabeledInput } from './components/labeled-input/labeled-input';
 import { SelectOptions } from './components/select-options/select-options';
+import { validateNip, validatePesel } from './helpers/helper';
 
 function App() {
-	const [type, setType] = useState('Osoba');
+  const [type, setType] = useState('Osoba');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState('');
 
-	const handleSelectOptions = () => {
-		if (type === 'Osoba') {
-			setType('Firma');
-		} else {
-			setType('Osoba');
-		}
-	};
+  const imageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
 
-	const validatePesel = pesel => {
-		let weight = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
-		let sum = 0;
-		let controlNumber = parseInt(pesel.substring(10, 11));
+  const removeSelectedImage = () => {
+    setSelectedImage(null);
+  };
 
-		for (let i = 0; i < weight.length; i++) {
-			sum += parseInt(pesel.substring(i, i + 1)) * weight[i];
-		}
-		sum = sum % 10;
-		return (10 - sum) % 10 === controlNumber;
-	};
+  const handlePeselNip = (event: FormEvent<HTMLInputElement>) => {
+    console.log(event.currentTarget.value);
+    const newValue = event.currentTarget.value;
+    if (type === 'Osoba') {
+      validatePesel(newValue);
+    } else {
+      validateNip(newValue);
+    }
+  };
 
-	const validateNip = nip => {
-		// if (typeof nip !== 'string') return false;
+  const handleSubmit = async (event: FormEvent) => {
+    console.log('click');
+    event.preventDefault();
+    try {
+      const response = await fetch('https://localhost:60001/Contractor/Save');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      setError('Nie znaleziono metody zapisu');
+    }
+  };
 
-		// nip = nip.replace(/[\\-]/gi, '');
+  return (
+    <div className="container">
+      <header>
+        <h1>Kontrahent</h1>
+      </header>
+      <form className="container__form" method="post" onSubmit={handleSubmit}>
+        <LabeledInput labelFor="first-name" name="Imię" type="text" placeholder="Imię" required />
 
-		let weight = [6, 5, 7, 2, 3, 4, 5, 6, 7];
-		let sum = 0;
-		let controlNumber = parseInt(nip.substring(9, 10));
-		let weightCount = weight.length;
-		for (let i = 0; i < weightCount; i++) {
-			sum += parseInt(nip.substr(i, 1)) * weight[i];
-		}
+        <LabeledInput
+          labelFor="last-name"
+          name="Nazwisko"
+          type="text"
+          placeholder="Nazwisko"
+          required
+        />
 
-		return sum % 11 === controlNumber;
-	};
+        <SelectOptions name="type" typeDetector="Osoba" />
 
-	const handlePeselNip = (event: FormEvent<HTMLInputElement>) => {
-		console.log(event.currentTarget.value);
-		const newValue = event.currentTarget.value;
-		if (type === 'Osoba') {
-			validatePesel(newValue);
-		} else {
-			validateNip(newValue);
-		}
-	};
+        <LabeledInput
+          labelFor="id-number"
+          name="Numer identyfikacyjny"
+          type="number"
+          placeholder={type === 'Osoba' ? 'Pesel' : 'NIP'}
+          onChange={() => handlePeselNip}
+          required
+        />
 
-	const handleSubmit = async (event: FormEvent) => {
-		console.log('click');
-		event.preventDefault();
-		try {
-			const response = await fetch('https://localhost:60001/Contractor/Save');
-			const data = await response.json();
-			return data;
-		} catch (error) {
-			throw new Error('Nie znaleziono metody zapisu');
-		}
-	};
+        <LabeledInput
+          labelFor="image"
+          name="Zdjęcie"
+          type="file"
+          accept="image/jpg, image/jpeg"
+          onChange={() => imageChange}
+        />
+        {selectedImage && (
+          <div>
+            <img src={URL.createObjectURL(selectedImage)} alt="Thumb" />
+            <button onClick={removeSelectedImage}>Remove This Image</button>
+          </div>
+        )}
 
-	return (
-		<div className='container'>
-			<h1>Kontrahent</h1>
-			<form className='container__form' method='post' onSubmit={handleSubmit}>
-				<LabeledInput labelFor='first-name' name='Imię' type='text' placeholder='Imię' required />
-
-				<LabeledInput labelFor='last-name' name='Nazwisko' type='text' placeholder='Nazwisko' required />
-
-				<SelectOptions onChange={handleSelectOptions} />
-
-				<LabeledInput
-					labelFor='id-number'
-					name='Numer identyfikacyjny'
-					type='number'
-					placeholder={type === 'Osoba' ? 'Pesel' : 'NIP'}
-					onChange={() => handlePeselNip}
-					required
-				/>
-
-				<LabeledInput labelFor='image' name='Zdjęcie' type='file' accept='image/jpg, image/jpeg' />
-
-				<input className='container__form--submit-btn' type='button' value='Wyślij' />
-			</form>
-		</div>
-	);
+        <button className="container__form--submit-btn" type="submit">
+          Wyślij
+        </button>
+        {error && (
+          <span className="container__form--alert-message">Nie znaleziono metody zapisu</span>
+        )}
+      </form>
+    </div>
+  );
 }
 
 export default App;

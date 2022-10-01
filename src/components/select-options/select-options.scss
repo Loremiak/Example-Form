@@ -1,22 +1,22 @@
 .select-options {
-	&__label {
-		align-self: flex-start;
-		margin-top: 0.5rem;
-	}
+  &__label {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
 
-	&__select {
-		width: 100%;
-		margin: 0.5rem 0;
-		padding: 0.5rem;
-		border-radius: 25px;
-		font-size: 1rem;
-		opacity: 0.75;
-		cursor: pointer;
+  &__select {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    opacity: 0.75;
+    cursor: pointer;
 
-		&:focus {
-			outline: none;
-			border-color: yellow;
-			box-shadow: 0 0 10px yellow;
-		}
-	}
+    &:focus {
+      outline: none;
+      border-color: yellow;
+      box-shadow: 0 0 10px yellow;
+    }
+  }
 }
