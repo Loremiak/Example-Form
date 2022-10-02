@@ -6,16 +6,14 @@ interface LabeledInputProps {
   name: string;
   type: string;
   placeholder?: string;
-  accept?: string;
   required?: boolean;
-  onChange?: () => void;
+  onChange?: (e: unknown) => void;
 }
 
 export const LabeledInput = ({
   labelFor,
   name,
   placeholder,
-  accept,
   type,
   onChange,
   required
@@ -32,7 +30,6 @@ export const LabeledInput = ({
         name={labelFor}
         onChange={onChange}
         required={required}
-        accept={accept}
       />
     </>
   );

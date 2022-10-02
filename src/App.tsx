@@ -1,37 +1,28 @@
-import React from 'react';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import './App.scss';
+import { ImageSelectInput } from './components/image-select-input/image-select-input';
 import { LabeledInput } from './components/labeled-input/labeled-input';
 import { SelectOptions } from './components/select-options/select-options';
 import { validateNip, validatePesel } from './helpers/helper';
 
 function App() {
   const [type, setType] = useState('Osoba');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const imageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedImage(event.target.files[0]);
-    }
-  };
-
-  const removeSelectedImage = () => {
-    setSelectedImage(null);
-  };
 
   const handlePeselNip = (event: FormEvent<HTMLInputElement>) => {
     console.log(event.currentTarget.value);
     const newValue = event.currentTarget.value;
-    if (type === 'Osoba') {
-      validatePesel(newValue);
-    } else {
-      validateNip(newValue);
-    }
+
+    console.log(newValue);
+    validatePesel(newValue);
+
+    // validateNip(newValue);
   };
 
   const handleSubmit = async (event: FormEvent) => {
-    console.log('click');
+    setIsLoading(true);
     event.preventDefault();
     try {
       const response = await fetch('https://localhost:60001/Contractor/Save');
@@ -40,6 +31,7 @@ function App() {
     } catch (error) {
       setError('Nie znaleziono metody zapisu');
     }
+    setIsLoading(false);
   };
 
   return (
@@ -68,23 +60,12 @@ function App() {
           onChange={() => handlePeselNip}
           required
         />
+        {/* <span>Błąd w numerze identyfikacyjny</span> */}
 
-        <LabeledInput
-          labelFor="image"
-          name="Zdjęcie"
-          type="file"
-          accept="image/jpg, image/jpeg"
-          onChange={() => imageChange}
-        />
-        {selectedImage && (
-          <div>
-            <img src={URL.createObjectURL(selectedImage)} alt="Thumb" />
-            <button onClick={removeSelectedImage}>Remove This Image</button>
-          </div>
-        )}
+        <ImageSelectInput accept="image/jpg, image/jpeg" name="image" />
 
         <button className="container__form--submit-btn" type="submit">
-          Wyślij
+          {isLoading ? <div className="container__form--loader" /> : 'Wyślij'}
         </button>
         {error && (
           <span className="container__form--alert-message">Nie znaleziono metody zapisu</span>
