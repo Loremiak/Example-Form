@@ -6,26 +6,11 @@ import { LabeledInput } from './components/labeled-input/labeled-input';
 import { SelectOptions } from './components/select-options/select-options';
 import { validatePolish } from 'validate-polish';
 
-interface InputValueProps {
-  firstName: string;
-  lastName: string;
-  type: string;
-  idNumber: number;
-  image?: string;
-}
-
 function App() {
   const [type, setType] = useState('Osoba');
   const [isLoading, setIsLoading] = useState(false);
   const [isValidIdNumber, setIsValidIdNumber] = useState(true);
   const [error, setError] = useState('');
-  const [inputValue, setInputValue] = useState<InputValueProps>({
-    firstName: '',
-    lastName: '',
-    type: '',
-    idNumber: 0,
-    image: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
-  });
 
   const handleValidation = (event: FormEvent<HTMLInputElement>) => {
     const newValue = event.currentTarget.value;
@@ -40,13 +25,6 @@ function App() {
     if (!newValue) {
       setIsValidIdNumber(true);
     }
-  };
-
-  const handleChange = (event) => {
-    setInputValue((prevState) => ({
-      ...prevState,
-      [event.currentTarget.name]: event.currentTarget.value
-    }));
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -71,23 +49,13 @@ function App() {
         <h1>Kontrahent</h1>
       </header>
       <form className="container__form" method="post" onSubmit={handleSubmit}>
-        <LabeledInput
-          labelFor="first-name"
-          name="Imię"
-          type="text"
-          placeholder="Imię"
-          onChange={handleChange}
-          value={inputValue.firstName}
-          required
-        />
+        <LabeledInput labelFor="first-name" name="Imię" type="text" placeholder="Imię" required />
 
         <LabeledInput
           labelFor="last-name"
           name="Nazwisko"
           type="text"
           placeholder="Nazwisko"
-          value={inputValue.lastName}
-          onChange={handleChange}
           required
         />
 
@@ -99,20 +67,13 @@ function App() {
           type="number"
           placeholder={type === 'Osoba' ? 'Pesel' : 'NIP'}
           onChange={(event) => handleValidation(event)}
-          value={inputValue.type}
-          // onChange={handleChange}
           required
         />
         {!isValidIdNumber && (
           <span className="container__form--number-error">Błąd w numerze identyfikacyjnym</span>
         )}
 
-        <ImageSelectInput
-          accept="image/jpg, image/jpeg"
-          name="image"
-          value={inputValue.image}
-          // onChange={handleChange}
-        />
+        <ImageSelectInput accept="image/jpg, image/jpeg" name="image" value={undefined} />
 
         {isValidIdNumber ? (
           <button className="container__form--submit-btn" type="submit">
