@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { ImageSelectInput } from './components/image-select-input/image-select-input';
 import { LabeledInput } from './components/labeled-input/labeled-input';
@@ -10,9 +10,15 @@ function App() {
   const [type, setType] = useState('Osoba');
   const [isLoading, setIsLoading] = useState(false);
   const [isValidIdNumber, setIsValidIdNumber] = useState(true);
+  const [values, setValues] = useState({
+    Imię: '',
+    Nazwisko: '',
+    Zdjęcie: '',
+    NumerIdentyfikacyjny: ''
+  });
   const [error, setError] = useState('');
 
-  const handleValidation = (event: FormEvent<HTMLInputElement>) => {
+  const handleValidation = (event: React.FormEvent<HTMLInputElement>) => {
     const newValue = event.currentTarget.value;
     if (type === 'Osoba') {
       const validatedPesel = validatePolish.pesel(newValue);
@@ -27,13 +33,26 @@ function App() {
     }
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const { name, value } = event.currentTarget;
+    setValues({
+      ...values,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     setIsLoading(true);
     event.preventDefault();
     try {
       const response = await fetch('https://localhost:60001/Contractor/Save', {
         method: 'POST',
-        body: ''
+        body: JSON.stringify({
+          Imię: values.Imię,
+          Nazwisko: values.Nazwisko,
+          Zdjęcie: values.Zdjęcie,
+          NumerIdentyfikacyjny: values.NumerIdentyfikacyjny
+        })
       });
       const data = await response.json();
       return data;
@@ -49,20 +68,30 @@ function App() {
         <h1>Kontrahent</h1>
       </header>
       <form className="container__form" method="post" onSubmit={handleSubmit}>
-        <LabeledInput labelFor="first-name" name="Imię" type="text" placeholder="Imię" required />
+        <LabeledInput
+          labelFor="Imię"
+          name="Imię"
+          type="text"
+          placeholder="Imię"
+          value={values.Imię}
+          onChange={handleInputChange}
+          required
+        />
 
         <LabeledInput
-          labelFor="last-name"
+          labelFor="Nazwisko"
           name="Nazwisko"
           type="text"
           placeholder="Nazwisko"
+          value={values.Nazwisko}
+          onChange={handleInputChange}
           required
         />
 
         <SelectOptions name="type" setType={setType} />
 
         <LabeledInput
-          labelFor="id-number"
+          labelFor="NumerIdentyfikacyjny"
           name={`Numer identyfikacyjny ${type === 'Osoba' ? 'Pesel' : 'NIP'}`}
           type="number"
           placeholder={type === 'Osoba' ? 'Pesel' : 'NIP'}
@@ -70,10 +99,15 @@ function App() {
           required
         />
         {!isValidIdNumber && (
-          <span className="container__form--number-error">Błąd w numerze identyfikacyjnym</span>
+          <span className="container__form--id-error">Błąd w numerze identyfikacyjnym</span>
         )}
 
-        <ImageSelectInput accept="image/jpg, image/jpeg" name="image" value={undefined} />
+        <ImageSelectInput
+          accept="image/jpg, image/jpeg"
+          name="Zdjęcie"
+          value={values.Zdjęcie}
+          onChange={handleInputChange}
+        />
 
         {isValidIdNumber ? (
           <button className="container__form--submit-btn" type="submit">
@@ -84,10 +118,11 @@ function App() {
             Wyślij
           </button>
         )}
+
         {error && (
-          <span className="container__form--alert-message">
+          <span className="container__form--submit-error">
             Nie znaleziono metody zapisu
-            <span className="container__form--alert-message--abort" onClick={() => setError('')}>
+            <span className="container__form--submit-error--abort" onClick={() => setError('')}>
               X
             </span>
           </span>

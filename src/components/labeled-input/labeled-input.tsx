@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React from 'react';
 import './labeled-input.scss';
 
 interface LabeledInputProps {
@@ -8,7 +8,7 @@ interface LabeledInputProps {
   value?: string;
   placeholder?: string;
   required?: boolean;
-  onChange?: (e: FormEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export const LabeledInput = ({

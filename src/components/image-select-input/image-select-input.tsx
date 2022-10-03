@@ -1,18 +1,19 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import './image-select-input.scss';
 
 interface ImageSelectInputProps {
   name: string;
   accept: string;
   value: string | undefined;
+  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export const ImageSelectInput = ({ name, accept }: ImageSelectInputProps) => {
+export const ImageSelectInput = ({ name, accept, onChange }: ImageSelectInputProps) => {
   const [image, setImage] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
   );
 
-  const imageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const imageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
     reader.onload = () => {
       setImage(String(reader.result));
@@ -22,6 +23,7 @@ export const ImageSelectInput = ({ name, accept }: ImageSelectInputProps) => {
       const file: File = target[0];
       reader.readAsDataURL(file);
     }
+    return onChange;
   };
   return (
     <>
