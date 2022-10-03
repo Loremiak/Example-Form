@@ -4,21 +4,24 @@ import './image-select-input.scss';
 interface ImageSelectInputProps {
   name: string;
   accept: string;
+  value: string | undefined;
 }
 
 export const ImageSelectInput = ({ name, accept }: ImageSelectInputProps) => {
-  const [image, setImage] = useState<string | undefined>(
+  const [image, setImage] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
   );
 
-  const imageChange = (event: ChangeEvent) => {
+  const imageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
     reader.onload = () => {
       setImage(String(reader.result));
     };
-    const target = event.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    reader.readAsDataURL(file);
+    const target = event.target.files;
+    if (target) {
+      const file: File = target[0];
+      reader.readAsDataURL(file);
+    }
   };
   return (
     <>

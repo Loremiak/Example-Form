@@ -38,12 +38,29 @@
       }
     }
 
+    &--number-error {
+      position: absolute;
+      color: darkred;
+      font-size: 0.75rem;
+      font-weight: bold;
+      bottom: 305px;
+    }
+
     &--alert-message {
       position: absolute;
       bottom: 10px;
       color: darkred;
       font-size: 0.75rem;
       margin-top: 0.5rem;
+      font-weight: bold;
+
+      &--abort {
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: bold;
+        position: absolute;
+        bottom: -8px;
+      }
     }
 
     &--loader {

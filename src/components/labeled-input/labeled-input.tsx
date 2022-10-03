@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import './labeled-input.scss';
 
 interface LabeledInputProps {
   labelFor: string;
   name: string;
   type: string;
+  value?: string;
   placeholder?: string;
   required?: boolean;
-  onChange?: (e: unknown) => void;
+  onChange?: (e: FormEvent<HTMLInputElement>) => void;
 }
 
 export const LabeledInput = ({
@@ -16,6 +17,7 @@ export const LabeledInput = ({
   placeholder,
   type,
   onChange,
+  value,
   required
 }: LabeledInputProps) => {
   return (
@@ -29,6 +31,7 @@ export const LabeledInput = ({
         placeholder={placeholder}
         name={labelFor}
         onChange={onChange}
+        value={value}
         required={required}
       />
     </>
