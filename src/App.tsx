@@ -11,10 +11,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidIdNumber, setIsValidIdNumber] = useState(true);
   const [values, setValues] = useState({
-    Imię: '',
-    Nazwisko: '',
-    Zdjęcie: '',
-    NumerIdentyfikacyjny: ''
+    name: '',
+    lastName: '',
+    type: 'Osoba',
+    idNumber: '',
+    image: ''
   });
   const [error, setError] = useState('');
 
@@ -23,10 +24,12 @@ function App() {
     if (type === 'Osoba') {
       const validatedPesel = validatePolish.pesel(newValue);
       setIsValidIdNumber(validatedPesel);
+      handleInputChange(event);
     }
     if (type === 'Firma') {
       const validatedNip = validatePolish.nip(newValue);
       setIsValidIdNumber(validatedNip);
+      handleInputChange(event);
     }
     if (!newValue) {
       setIsValidIdNumber(true);
@@ -48,10 +51,11 @@ function App() {
       const response = await fetch('https://localhost:60001/Contractor/Save', {
         method: 'POST',
         body: JSON.stringify({
-          Imię: values.Imię,
-          Nazwisko: values.Nazwisko,
-          Zdjęcie: values.Zdjęcie,
-          NumerIdentyfikacyjny: values.NumerIdentyfikacyjny
+          name: values.name,
+          lastName: values.lastName,
+          type: type,
+          idNumber: values.idNumber,
+          image: values.image
         })
       });
       const data = await response.json();
@@ -69,21 +73,21 @@ function App() {
       </header>
       <form className="container__form" method="post" onSubmit={handleSubmit}>
         <LabeledInput
-          labelFor="Imię"
+          labelFor="name"
           name="Imię"
           type="text"
           placeholder="Imię"
-          value={values.Imię}
+          value={values.name}
           onChange={handleInputChange}
           required
         />
 
         <LabeledInput
-          labelFor="Nazwisko"
+          labelFor="lastName"
           name="Nazwisko"
           type="text"
           placeholder="Nazwisko"
-          value={values.Nazwisko}
+          value={values.lastName}
           onChange={handleInputChange}
           required
         />
@@ -91,7 +95,7 @@ function App() {
         <SelectOptions name="type" setType={setType} />
 
         <LabeledInput
-          labelFor="NumerIdentyfikacyjny"
+          labelFor="idNumber"
           name={`Numer identyfikacyjny ${type === 'Osoba' ? 'Pesel' : 'NIP'}`}
           type="number"
           placeholder={type === 'Osoba' ? 'Pesel' : 'NIP'}
@@ -105,7 +109,7 @@ function App() {
         <ImageSelectInput
           accept="image/jpg, image/jpeg"
           name="Zdjęcie"
-          value={values.Zdjęcie}
+          value={values.image}
           onChange={handleInputChange}
         />
 

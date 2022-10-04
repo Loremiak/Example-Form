@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 .label {
   &__label {
     align-self: flex-start;
@@ -13,14 +15,14 @@
     padding: 0.5rem 1rem;
     border-radius: 25px;
     opacity: 0.75;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
-    -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 4px var(--box-shadow);
+    -moz-box-shadow: inset 0 0 4px var(--box-shadow);
+    -webkit-box-shadow: inset 0 0 4px var(--box-shadow);
 
     &:focus {
       outline: none;
-      border-color: yellow;
-      box-shadow: 0 0 10px yellow;
+      border-color: var(--yellow);
+      box-shadow: 0 0 10px var(--yellow);
     }
   }
 }

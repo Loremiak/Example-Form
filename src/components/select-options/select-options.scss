@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 .select-options {
   &__label {
     align-self: flex-start;
@@ -16,8 +18,8 @@
 
     &:focus {
       outline: none;
-      border-color: yellow;
-      box-shadow: 0 0 10px yellow;
+      border-color: var(--yellow);
+      box-shadow: 0 0 10px var(--yellow);
     }
   }
 }
